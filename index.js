@@ -67,7 +67,18 @@ io.on("connection", async(socket) => {
     })
 
 
+// Task Deletion
+socket.on('deleteTask', async (taskId)=>{
+    try{
+        await Task.findByIdAndDelete(taskId);
 
+        // Notify all clients about the deletion
+        io.emit('taskDeleted', taskId);
+    }catch (error) {
+        console.error('Error deleting task:', error);
+        socket.emit('error', { message: 'Unable to delete task' });
+      }
+})
 
 
 

@@ -2,44 +2,44 @@ const socket = io();
 
 // Handle task submission
 const taskForm = document.querySelector('form');
-const submitButton = document.querySelector('#submit-button');
+// const submitButton = document.querySelector('#submit-button');
 const tasksList = document.getElementById('tasks-list')
 
 taskForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const task = {
-        title: taskForm.title.value,
-        category: taskForm.category.value,
-        date: taskForm.date.value,
-    }
-    console.log(task)
+  e.preventDefault();
+  const task = {
+    title: taskForm.title.value,
+    category: taskForm.category.value,
+    date: taskForm.date.value,
+  }
+  console.log(task)
 
-    // Emit the task data to the server
-    socket.emit("addTask", task)
-    alert(`New task added: ${task.title}`);
+  // Emit the task data to the server
+  socket.emit("addTask", task)
+  alert(`New task added: ${task.title}`);
 
-    // Clear form field
-    taskForm.reset();
+  // Clear form field
+  taskForm.reset();
 })
 
 // Display all tasks
 socket.on('getTasks', (tasks) => {
-    console.log(tasks)
-    tasks.forEach((task) => {
-        addTaskToDOM(task)
-    })
+  console.log(tasks)
+  tasks.forEach((task) => {
+    addTaskToDOM(task)
+  })
 })
 
 socket.on('taskAdded', (task) => {
-    addTaskToDOM(task)
+  addTaskToDOM(task)
 })
 
 // Helper fucntion to add tasks to the DOM
 const addTaskToDOM = (task) => {
-    const li = document.createElement('li')
-    li.id = task._id;
-    li.className = 'list-group-item d-flex justify-content-between align-items-center mt-2 mb-2';
-    li.innerHTML = `
+  const li = document.createElement('li')
+  li.id = task._id;
+  li.className = 'list-group-item d-flex justify-content-between align-items-center mt-2 mb-2';
+  li.innerHTML = `
       <span>
       ${task.title} - <span class="badge bg-primary">${task.category}</span>
       </span>
@@ -47,11 +47,27 @@ const addTaskToDOM = (task) => {
         <button class="btn btn-outline-secondary btn-sm me-2">
           <i class="bi bi-pencil-square"></i>
         </button>  
-        <button class="btn btn-outline-danger btn-sm">
+        <button class="btn btn-outline-danger btn-sm" onclick="deleteTask('${task._id}')">
           <i class="bi bi-trash"></i>
         </button>
       </div>
     `;
 
-    tasksList.appendChild(li)
+  tasksList.appendChild(li)
 }
+
+// delete a task 
+function deleteTask(taskId) {
+  // Emit the task ID to the server for deletion
+  socket.emit('deleteTask', taskId)
+}
+
+// Listen for task deletions from the server
+socket.on('taskDeleted', (taskId) => {
+  alert(`Task with ID: ${taskId} has been deleted`);
+  // Remove the task from The UI
+  const taskItem = document.getElementById(taskId);
+  if (taskItem) {
+    taskItem.remove();
+  }
+})
