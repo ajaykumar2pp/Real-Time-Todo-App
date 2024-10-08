@@ -30,8 +30,18 @@ const io = new Server(server);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // **********  Socket.io connection handling *************//
-io.on("connection", (socket) => {
+io.on("connection", async(socket) => {
     console.log(`New user connected : ${socket.id}`);
+
+    // Emit all existing  task to the new user
+    try{
+          const tasks = await Task.find().select("-createdAt  -__v");
+        //   console.log(tasks)
+          socket.emit('getTasks',tasks)
+    }catch(error){
+        console.error('Error fetching tasks:', error);
+        socket.emit('error', { message: 'Unable to fetch tasks' });
+    }
 
     // Add new task 
     socket.on("addTask", async (taskData) => {
