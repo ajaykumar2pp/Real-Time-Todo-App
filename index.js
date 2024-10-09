@@ -30,15 +30,15 @@ const io = new Server(server);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // **********  Socket.io connection handling *************//
-io.on("connection", async(socket) => {
+io.on("connection", async (socket) => {
     console.log(`New user connected : ${socket.id}`);
 
     // Emit all existing  task to the new user
-    try{
-          const tasks = await Task.find().select("-createdAt  -__v");
+    try {
+        const tasks = await Task.find().select("-createdAt  -__v");
         //   console.log(tasks)
-          socket.emit('getTasks',tasks)
-    }catch(error){
+        socket.emit('getTasks', tasks)
+    } catch (error) {
         console.error('Error fetching tasks:', error);
         socket.emit('error', { message: 'Unable to fetch tasks' });
     }
@@ -53,32 +53,55 @@ io.on("connection", async(socket) => {
                 date: taskData.date,
                 createdAt: moment().format('MMMM Do YYYY, h:mm:ss a')
 
-            }); 
+            });
 
             // Save the new task to the database
             const savedTask = await taskToAdd.save();
             console.log(savedTask)
-            
+
             // Broadcast the newly saved task to all connected clients
             io.emit('taskAdded', savedTask);
         } catch (error) {
             console.error('Error saving task:', error);
         }
     })
+      
+    // Task Update 
+    socket.on('updateTask', async (updateTask)=>{
+        try{
+            const task = await Task.findByIdAndUpdate(
+                updateTask._id,
+                {
+                    title: updateTask.title,
+                    category: updateTask.category,
+                    date:updateTask.date
+                },{new : true}
+            );
+            if(!task){
+                socket.emit('error', {message:'Task not found'})
+                return;
+            }
 
+            // Emit the updated task to all clients
+            io.emit('taskUpdated', task)
+        }catch(error){
+            console.error('Error update task:', error);
+            socket.emit('error', { message: 'Unable to update task' });
+        }
+    })
 
-// Task Deletion
-socket.on('deleteTask', async (taskId)=>{
-    try{
-        await Task.findByIdAndDelete(taskId);
+    // Task Deletion
+    socket.on('deleteTask', async (taskId) => {
+        try {
+            await Task.findByIdAndDelete(taskId);
 
-        // Notify all clients about the deletion
-        io.emit('taskDeleted', taskId);
-    }catch (error) {
-        console.error('Error deleting task:', error);
-        socket.emit('error', { message: 'Unable to delete task' });
-      }
-})
+            // Notify all clients about the deletion
+            io.emit('taskDeleted', taskId);
+        } catch (error) {
+            console.error('Error deleting task:', error);
+            socket.emit('error', { message: 'Unable to delete task' });
+        }
+    })
 
 
 

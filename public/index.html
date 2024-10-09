@@ -70,12 +70,65 @@
                 </ul>
             </div>
         </div>
+
+        <!-- Modal for updating tasks -->
+        <div class="modal fade" id="todoTaskModal" tabindex="-1" aria-labelledby="updateTaskModalLabel"
+        aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-secondary">
+                        <h5 class="modal-title text-white" id="todoTaskTitle">Update Task</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="updateTaskForm">
+                            <div class="mb-3">
+                                <label for="updateTitle" class="form-label fw-bold">Task Title</label>
+                                <input type="text" id="updateTitle" class="form-control">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="updateCategory" class="form-label fw-bold">Task Category</label>
+                                        <select id="updateCategory" class="form-select" name="updateCategory">
+                                            <option value="" selected disabled>Choose a category</option>
+                                            <option value="Personal">Personal</option>
+                                            <option value="Work">Work</option>
+                                            <option value="School">School</option>
+                                            <option value="College">College</option>
+                                            <option value="Office">Office</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="updateDate" class="form-label fw-bold">Date</label>
+                                        <input type="date" class="form-control" id="updateDate" name="date" >
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <input type="hidden" id="taskId">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <!--  Close Button -->
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <!-- Save Button -->
+                        <button type="submit" class="btn btn-primary" form="updateTaskForm">Save changes</button>
+                    </div>                    
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+
+
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
     <script src="/js/script.js"></script>
 </body>
 
