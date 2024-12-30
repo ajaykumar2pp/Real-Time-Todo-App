@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // **********  Socket.io connection handling *************//
 io.on("connection", async (socket) => {
-    console.log(`New user connected : ${socket.id}`);
+    // console.log(`New user connected : ${socket.id}`);
 
     // Emit all existing  task to the new user
     try {
@@ -57,7 +57,7 @@ io.on("connection", async (socket) => {
 
             // Save the new task to the database
             const savedTask = await taskToAdd.save();
-            console.log(savedTask)
+            // console.log(savedTask)
 
             // Broadcast the newly saved task to all connected clients
             io.emit('taskAdded', savedTask);

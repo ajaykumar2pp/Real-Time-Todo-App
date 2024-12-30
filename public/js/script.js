@@ -13,11 +13,11 @@ taskForm.addEventListener("submit", (e) => {
     category: taskForm.category.value,
     date: taskForm.date.value,
   }
-  console.log(task)
+  // console.log(task)
 
   // Emit the task data to the server
   socket.emit("addTask", task)
-  alert(`New task added: ${task.title}`);
+  // alert(`New task added: ${task.title}`);
 
   // Clear form field
   taskForm.reset();
@@ -42,7 +42,8 @@ const addTaskToDOM = (task) => {
       </div>
     `;
 
-  tasksList.appendChild(li)
+    
+  tasksList.appendChild(li);
 }
 
 // Delete a task 
@@ -88,7 +89,7 @@ updateTaskForm.addEventListener('submit', (e) => {
 
 // Display all tasks list from the server
 socket.on('getTasks', (tasks) => {
-  console.log(tasks)
+  // console.log(tasks)
   tasks.forEach(task => addTaskToDOM(task));
 })
 
@@ -108,7 +109,7 @@ socket.on('taskUpdated', (updatedTask) => {
 
 // Listen for task deletions from the server
 socket.on('taskDeleted', (taskId) => {
-  alert(`Task with ID: ${taskId} has been deleted`);
+  // alert(`Task with ID: ${taskId} has been deleted`);
   
   // Remove the task from The UI
   const taskItem = document.getElementById(taskId);
